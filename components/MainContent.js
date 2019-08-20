@@ -3,7 +3,8 @@ import React from "react";
 class InputBox extends React.Component {
     render() {
         return(
-            <form  autoComplete="off" onSubmit={this.props.handleInput}>
+            <form autoComplete="off" onSubmit={this.props.handleInput} id="form">
+                <input type="button" value="&or;" id="completeAll" onClick={this.props.handleCompleteAll}/>
                 <input type="text" placeholder="what needs to be done?" id="input"/>
             </form>
         );
@@ -17,6 +18,14 @@ class List extends React.Component {
         const inActiveOnly = this.props.inActiveOnly;
         const inCompletedOnly = this.props.inCompletedOnly;
         const list = [];
+        const bottom = items.length == 0 ? '' : <li>{items.filter((item)=> !item.completed).length} item left
+        <span className="buttonGroup">
+            <button className="btn btn-primary" onClick={this.props.handleInAllChange}>All</button>
+            <button onClick={this.props.handleInActiveChange}>Active</button>
+            <button onClick={this.props.handleInCompletedChange}>Completed</button>
+        </span>
+    </li>;
+
         items.forEach((item, index) => {
             if(inActiveOnly && item.completed) {
                 return;
@@ -24,10 +33,12 @@ class List extends React.Component {
                 return;
             } else {
                 list.push(
-                    <li key={item.content}>  
-                        <input type="checkbox" id={index} checked={item.completed}onChange={this.props.handleCheck}/>
-                        {item.completed? <s>{item.content}</s> : item.content}       {/*根据是否完成决定任务显示状态*/} 
-                        <span className="delete">&times;</span>
+                    <li key={index} className="todos">  
+                        <label id={index}>
+                            <input type="checkbox" checked={item.completed} onChange={this.props.handleCheck}/>
+                            {item.completed? <s>{item.content}</s> : item.content}       {/*根据是否完成决定任务显示状态*/} 
+                            <button className="delete" onClick={this.props.handleDelete}>&times;</button>                               
+                        </label>
                     </li>
                     );
             }
@@ -36,13 +47,7 @@ class List extends React.Component {
         return(
             <ul type="none">
                 {list}
-                <li>{items.filter((item)=> !item.completed).length} item left
-                    <span className="buttonGroup">
-                        <button onClick={this.props.handleInAllChange}>All</button>
-                        <button onClick={this.props.handleInActiveChange}>Active</button>
-                        <button onClick={this.props.handleInCompletedChange}>Completed</button>
-                    </span>
-                </li>
+                {bottom}
             </ul>
         );
     }
@@ -57,16 +62,33 @@ class MainContent extends React.Component {
         this.handleInActiveChange = this.handleInActiveChange.bind(this);
         this.handleInCompletedChange = this.handleInCompletedChange.bind(this);
         this.handleInAllChange = this.handleInAllChange.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleCompleteAll = this.handleCompleteAll.bind(this);
         this.state = {
-            items: [
-                {
-                    content: '吃饭',
-                    completed: false
-                }
-            ],
+            items: [],
             inActiveOnly: false,
-            inCompletedOnly: false
+            inCompletedOnly: false,
+            completeAll: false
         };
+    }
+
+    handleCompleteAll() {
+        const completeAll = this.state.completeAll;
+        const new_items = this.state.items;
+        new_items.forEach((item)=>{item.completed = !completeAll});
+        this.setState({
+            items: new_items,
+            completeAll: !completeAll
+        });
+    }
+
+    handleDelete(e) {
+        const index = e.target.parentNode.id;
+        const new_items = this.state.items;
+        new_items.splice(index,1);
+        this.setState({
+            items: new_items
+        });
     }
 
     handleInAllChange() {
@@ -91,7 +113,7 @@ class MainContent extends React.Component {
     }   
 
     handleCheck(e) {
-        const index = e.target.id;
+        const index = e.target.parentNode.id;
         const check = this.state.items[index].completed;
         let new_items = this.state.items;
 
@@ -119,7 +141,6 @@ class MainContent extends React.Component {
             new_items.push({content:input.value,completed:false});
         } 
         input.value = '';                               //获取代办事项后清空输入框
-        console.log(new_items); 
         this.setState({
             items: new_items
         });
@@ -130,8 +151,17 @@ class MainContent extends React.Component {
         const list = this.state.items;
         return(
             <div className="content">
-                <InputBox handleInput={this.handleInput}/>
-                <List items={list} handleCheck={this.handleCheck} handleInAllChange={this.handleInAllChange} handleInActiveChange={this.handleInActiveChange} handleInCompletedChange={this.handleInCompletedChange} inActiveOnly={this.state.inActiveOnly} inCompletedOnly={this.state.inCompletedOnly}/>
+                <InputBox 
+                handleInput={this.handleInput}
+                handleCompleteAll={this.handleCompleteAll}/>
+                <List items={list} 
+                handleCheck={this.handleCheck} 
+                handleDelete={this.handleDelete} 
+                handleInAllChange={this.handleInAllChange} 
+                handleInActiveChange={this.handleInActiveChange} 
+                handleInCompletedChange={this.handleInCompletedChange} 
+                inActiveOnly={this.state.inActiveOnly} 
+                inCompletedOnly={this.state.inCompletedOnly}/>
             </div>
         );
     }

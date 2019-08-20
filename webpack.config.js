@@ -18,6 +18,10 @@ module.exports = {
         hot: true   //HMR
     },
     plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, './src/index.html')
@@ -35,16 +39,8 @@ module.exports = {
                 }
             },
             {
-                test: /\.css$/,
-                use: [
-                    // 配置引用css
-                    {
-                        loader: 'style-loader'  // 可以把css放在页面上
-                    },
-                    {
-                        loader: 'css-loader'    // 放在后面的先被解析
-                    }
-                ]
+                test: /\.css|scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
             }
         ]
     }

@@ -1,18 +1,61 @@
+body {
+    background-color: #f1f1f1;
+}
+
 .header {
     text-align: center;
     font-size: 50px;
     color: rgba(175, 47, 47, 0.15);
 }
 
-body {
-    margin: 0;
+
+.delete {
+    font-size: 20px;
+    color: rgb(175, 47, 47);
+}
+
+.content {
+    margin: 0 auto;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    
+}
+
+ul {
     padding: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
+}
+
+.todos {
+    margin: 0;
+    position: relative;
+    height: 30px;
 }
 
 .delete {
-    font-size: 50px;
-    color: rgba(175, 47, 47, 0.15);
+    position: absolute;
+    right: 0;
 }
-.delete :hover {
+
+#form {
+    display: block; 
+    
+}
+
+#input {
+    height: 30px;
+    width: 370px;
+}
+
+#completeAll {
     color: rgb(175, 47, 47);
+    height: 34px;;
+}
+
+.buttonGroup {
+    margin-left: 50px;
 }
