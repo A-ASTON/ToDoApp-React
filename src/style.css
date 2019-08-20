@@ -9,3 +9,10 @@ body {
     padding: 0;
 }
 
+.delete {
+    font-size: 50px;
+    color: rgba(175, 47, 47, 0.15);
+}
+.delete :hover {
+    color: rgb(175, 47, 47);
+}
