@@ -18,12 +18,14 @@ class List extends React.Component {
         const inActiveOnly = this.props.inActiveOnly;
         const inCompletedOnly = this.props.inCompletedOnly;
         const list = [];
+        const clear = this.props.hasCompleted? <button onClick={this.props.handleClear} onClick={this.props.handleClear} className="clear">Clear completed</button> : '';
         const bottom = items.length == 0 ? '' : <li>{items.filter((item)=> !item.completed).length} item left
         <span className="buttonGroup">
             <button className="btn btn-primary" onClick={this.props.handleInAllChange}>All</button>
             <button onClick={this.props.handleInActiveChange}>Active</button>
             <button onClick={this.props.handleInCompletedChange}>Completed</button>
         </span>
+        {clear}
     </li>;
 
         items.forEach((item, index) => {
@@ -64,12 +66,31 @@ class MainContent extends React.Component {
         this.handleInAllChange = this.handleInAllChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleCompleteAll = this.handleCompleteAll.bind(this);
+        this.checkCompleted = this.checkCompleted.bind(this);
+        this.handleClear = this.handleClear.bind(this);
         this.state = {
             items: [],
             inActiveOnly: false,
             inCompletedOnly: false,
-            completeAll: false
+            completeAll: false,
+            hasCompleted: true
         };
+    }
+
+    checkCompleted() {
+        const items = this.state.items;
+        const hasCompleted = !items.every((item) => item.completed == false);
+        this.setState({
+            hasCompleted: hasCompleted
+        });
+    }
+
+    handleClear() {
+        const new_items = this.state.items.filter((item) => !item.completed);
+
+        this.setState({
+            items: new_items
+        });
     }
 
     handleCompleteAll() {
@@ -149,12 +170,16 @@ class MainContent extends React.Component {
 
     render() {
         const list = this.state.items;
+        const hasCompleted = this.state.hasCompleted;
+        
         return(
             <div className="content">
                 <InputBox 
                 handleInput={this.handleInput}
                 handleCompleteAll={this.handleCompleteAll}/>
                 <List items={list} 
+                hasCompleted={hasCompleted}
+                handleClear={this.handleClear}
                 handleCheck={this.handleCheck} 
                 handleDelete={this.handleDelete} 
                 handleInAllChange={this.handleInAllChange} 
